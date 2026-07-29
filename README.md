@@ -1,8 +1,10 @@
-# envpact-mcp
+# envpact-mcp-server
 
+[![Live](https://img.shields.io/badge/live-envpact--mcp--server.oriz.in-blue)](https://envpact-mcp-server.oriz.in)
+[![Stars](https://img.shields.io/github/stars/chirag127/envpact-mcp-server?style=social)](https://github.com/chirag127/envpact-mcp-server/stargazers)
 [![npm version](https://img.shields.io/npm/v/envpact-mcp.svg)](https://www.npmjs.com/package/envpact-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/chirag127/envpact-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/chirag127/envpact-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/chirag127/envpact-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/chirag127/envpact-mcp-server/actions/workflows/ci.yml)
 
 **Model Context Protocol server for envpact** — bring centralized
 secret management to AI coding agents (Cursor, Windsurf, Claude
