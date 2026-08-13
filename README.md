@@ -1,10 +1,14 @@
 # envpact-mcp-server
 
-[![Live](https://img.shields.io/badge/live-envpact--mcp--server.oriz.in-blue)](https://envpact-mcp-server.oriz.in)
-[![Stars](https://img.shields.io/github/stars/chirag127/envpact-mcp-server?style=social)](https://github.com/chirag127/envpact-mcp-server/stargazers)
-[![npm version](https://img.shields.io/npm/v/envpact-mcp.svg)](https://www.npmjs.com/package/envpact-mcp)
+> Bring your private, Git-backed secrets vault to any AI coding agent — generate `.env` files on demand, never paste an API key into a prompt again.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/chirag127/envpact-mcp-server?style=social)](https://github.com/chirag127/envpact-mcp-server/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/chirag127/envpact-mcp-server)](https://github.com/chirag127/envpact-mcp-server/commits)
+[![TypeScript](https://img.shields.io/badge/Node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![npm version](https://img.shields.io/npm/v/envpact-mcp.svg)](https://www.npmjs.com/package/envpact-mcp)
 [![CI](https://github.com/chirag127/envpact-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/chirag127/envpact-mcp-server/actions/workflows/ci.yml)
+[![Live](https://img.shields.io/badge/live-envpact--mcp--server.oriz.in-blue)](https://envpact-mcp-server.oriz.in)
 
 **Model Context Protocol server for envpact** — bring centralized
 secret management to AI coding agents (Cursor, Windsurf, Claude
@@ -14,8 +18,34 @@ client).
 > Stop pasting API keys into prompts. Let your agent generate
 > `.env` files from your private vault on demand.
 
+**Links:** [Repo](https://github.com/chirag127/envpact-mcp-server) · [Live docs](https://envpact-mcp-server.oriz.in) · [envpact umbrella](https://chirag127.github.io/envpact/) · [Dashboard](https://envpact.oriz.in)
+
 Part of the [envpact](https://github.com/chirag127/envpact)
 ecosystem.
+
+⭐ **If this is useful, please [star the repo](https://github.com/chirag127/envpact-mcp-server/stargazers)** — it helps other developers find it.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph agent["AI coding agent"]
+        A[Cursor / Windsurf / Claude Code / Cline]
+    end
+    subgraph mcp["envpact-mcp (this server)"]
+        T[MCP tools: generate_env, pull/push_secret,<br/>add_secret, rotate_secret, sync_github, ...]
+    end
+    vault[(~/.envpact/secrets/<br/>private GitHub vault)]
+    envf[.env file in project]
+    gha[GitHub Actions secrets]
+
+    A -- MCP stdio / HTTP --> T
+    T -- read/resolve --> vault
+    T -- write --> envf
+    T -- sync_github --> gha
+    worker["Cloudflare Worker<br/>(remote SSE / Streamable HTTP)"] -. same 11 tools .-> vault
+    A -. MCP over HTTP .-> worker
+```
 
 ## What it does
 
@@ -197,9 +227,52 @@ to disk. See `worker/README.md` for the full deviation list.
 - All vault commits are signed-off (`-s`) and authored by
   `envpact-mcp`.
 
+## Tech stack
+
+- **Node.js** (>=18), **TypeScript**/ESM, pnpm workspace.
+- **@modelcontextprotocol/sdk** for the MCP server; **zod** for tool schemas.
+- **Cloudflare Worker** (`worker/`) for the remote SSE / Streamable-HTTP variant.
+- Packaged as [`.mcpb`](./mcpb/) bundle and published to npm as `envpact-mcp`.
+
+## Repo structure
+
+```
+src/            # MCP server (stdio) — tool handlers
+worker/         # Cloudflare Worker (remote SSE / Streamable HTTP variant)
+mcpb/           # .mcpb bundle manifest + build
+docs/           # full API + usage reference (served at *.oriz.in)
+scripts/        # test + build-mcpb helpers
+server.json     # official MCP registry descriptor
+smithery.yaml   # Smithery listing config
+```
+
+## Related projects — the envpact ecosystem
+
+| Repo | Role |
+| :--- | :--- |
+| [envpact](https://github.com/chirag127/envpact) | Core (Python) vault library |
+| [envpact-npm-cli](https://github.com/chirag127/envpact-npm-cli) | Zero-dependency Node CLI (`envpact-cli`) |
+| **envpact-mcp-server** | MCP server for AI agents (this repo) |
+| [envpact-gh-action](https://github.com/chirag127/envpact-gh-action) | GitHub Action — resolve secrets in CI |
+| [envpact-registry-publisher-npm-cli](https://github.com/chirag127/envpact-registry-publisher-npm-cli) | Publish MCP servers to every registry |
+
+## Part of the oriz family
+
+One of ~80 [oriz](https://blog.oriz.in) projects — small, sharp,
+open-source tools. The live docs run **$0 on the Cloudflare free tier**.
+
+## Contributing
+
+PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md). Conventional
+commits are the changelog.
+
+## Status
+
+**Stable.** Published to npm; remote Worker variant listed on Smithery.
+
 ## License
 
-MIT © Chirag Singhal — see [LICENSE](./LICENSE).
+MIT © 2026 Chirag Singhal · chirag@oriz.in — see [LICENSE](./LICENSE).
 
 ## Documentation
 
