@@ -52,7 +52,7 @@
   ],
   "devDependencies": {
     "@anthropic-ai/mcpb": "^2.1.2",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.28.2",
     "fflate": "^0.8.3"
   },
   "packageManager": "pnpm@10.18.0"
